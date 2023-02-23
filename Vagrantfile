@@ -8,5 +8,11 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "debian/bullseye64"
 
-  
+  config.vm.define "repoverse" do |repoverse|
+    repoverse.vm.hostname = "repoverse"
+    repoverse.vm.provider :virtualbox do |vb|
+      vb.memory = 8192
+      vb.cpus = 4
+    end
+  end
 end
