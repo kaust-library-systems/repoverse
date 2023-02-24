@@ -10,6 +10,7 @@ Using Debian stable Bulleye 64
 mgarcia@mordor:~/Work/repoverse$ vagrant init debian/bullseye64
 
 ```
+
 ## Java
 
 Installing the suggested version of Java, version 11:
@@ -43,6 +44,7 @@ Upload has completed successfully!
   Destination: payara-5.2022.5.zip
 mgarcia@mordor:~/Work/repoverse$ 
 ```
+
 And after the upload
 
 ```
@@ -51,4 +53,8 @@ payara-5.2022.5.zip
 vagrant@repoverse:~$ 
 ```
 
+Installed `unzip`
 
+```
+vagrant@repoverse:~$ sudo apt install unzip
+```
