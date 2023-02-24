@@ -288,3 +288,102 @@ Finally we restart the server
 ```
 vagrant@repoverse:~$ sudo systemctl restart postgresql
 ```
+
+## Apache Solr
+
+Installing the supported version of Solr, Solr 8.x. We download from Apache Solr website the tarball
+
+```
+vagrant@repoverse:~$ wget -O solr-8.11.2.tgz https://www.apache.org/dyn/closer.lua/lucene/solr/8.11.2/solr-8.11.2.tgz?action=download
+```
+
+Next we extract the files
+
+```
+vagrant@repoverse:~$ sudo mkdir /usr/local/solr
+vagrant@repoverse:~$ sudo tar zxf solr-8.11.2.tgz -C /usr/local/solr
+vagrant@repoverse:~$ ls /usr/local/solr
+solr-8.11.2
+vagrant@repoverse:~$
+```
+
+Then we change the ownership of the directory
+
+```
+vagrant@repoverse:~$ sudo chown -R solr:solr /usr/local/solr
+```
+
+finally we configure Solr
+
+```
+vagrant@repoverse:~$ sudo -i -u solr
+sudo: unable to change directory to /home/solr: No such file or directory
+$ cd /usr/local/solr/
+$ ls
+solr-8.11.2
+$ cd solr-8.11.2
+$ ls
+CHANGES.txt  LICENSE.txt  LUCENE_CHANGES.txt  NOTICE.txt  README.txt  bin  contrib  dist  docs  example  licenses  server
+$ 
+$ cp -r server/solr/configsets/_default server/solr/collection1
+$ 
+```
+
+Downloading and extracting Dataverse package files
+
+```
+vagrant@repoverse:~$ wget https://github.com/IQSS/dataverse/releases/download/v5.13/dvinstall.zip
+vagrant@repoverse:~$ unzip dvinstall.zip -d /tmp/                                                                                                                   
+Archive:  dvinstall.zip                                                                                                                                             
+  inflating: /tmp/dvinstall/as-setup.sh                                                                                                                             
+  inflating: /tmp/dvinstall/dataverse.war
+  (...)
+```
+
+Copy Dataverse configuration files to Solr directory
+
+```
+vagrant@repoverse:/tmp/dvinstall$ # mg. Backup of solrconfig.xml                                                                             
+vagrant@repoverse:/tmp/dvinstall$ sudo cp \
+> /usr/local/solr/solr-8.11.2/server/solr/collection1/conf/solrconfig.xml \
+> /usr/local/solr/solr-8.11.2/server/solr/collection1/conf/solrconfig.xml_orig
+vagrant@repoverse:/tmp/dvinstall$
+vagrant@repoverse:/tmp/dvinstall$ sudo cp \
+> schema*.xml \
+> /usr/local/solr/solr-8.11.2/server/solr/collection1/conf
+vagrant@repoverse:/tmp/dvinstall$ sudo cp \
+> solrconfig.xml \
+> /usr/local/solr/solr-8.11.2/server/solr/collection1/conf
+vagrant@repoverse:/tmp/dvinstall$
+```
+
+Next we change the file `jetty.xml` to increase the default value of `requestHeaderSize`
+
+```
+vagrant@repoverse:~$ sudo cp /usr/local/solr/solr-8.11.2/server/etc/jetty.xml \
+> /usr/local/solr/solr-8.11.2/server/etc/jetty.xml_orig
+vagrant@repoverse:~$ 
+vagrant@repoverse:~$ sudo vim /usr/local/solr/solr-8.11.2/server/etc/jetty.xml
+vagrant@repoverse:~$ 
+vagrant@repoverse:~$ diff /usr/local/solr/solr-8.11.2/server/etc/jetty.xml \
+> /usr/local/solr/solr-8.11.2/server/etc/jetty.xml_orig 
+71c71
+<     <Set name="requestHeaderSize"><Property name="solr.jetty.request.header.size" default="102400" /></Set>
+---
+>     <Set name="requestHeaderSize"><Property name="solr.jetty.request.header.size" default="8192" /></Set>
+vagrant@repoverse:~$ 
+```
+
+> *Not* setting the `ulimit` values yet.
+
+Telling Solr to create the "collection1" on startup.
+
+```
+vagrant@repoverse:/usr/local/solr/solr-8.11.2/server/solr$ sudo -i -u solr
+sudo: unable to change directory to /home/solr: No such file or directory
+$ echo "name=collection1" > /usr/local/solr/solr-8.11.2/server/solr/collection1/core.properties
+$ exit
+vagrant@repoverse:/usr/local/solr/solr-8.11.2/server/solr$ 
+```
+
+### Solr Init Script
