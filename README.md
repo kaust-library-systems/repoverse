@@ -58,3 +58,56 @@ Installed `unzip`
 ```
 vagrant@repoverse:~$ sudo apt install unzip
 ```
+
+Extrancting `payara`, and moving it to `/usr/local/`
+
+```
+vagrant@repoverse:~$ unzip payara-5.2022.5.zip    
+Archive:  payara-5.2022.5.zip                                         
+   creating: payara5/ 
+   (...)
+vagrant@repoverse:~$ sudo mv payara5 /usr/local/
+vagrant@repoverse:~$ ls /usr/local/
+bin  etc  games  include  lib  man  payara5  sbin  share  src
+vagrant@repoverse:~$
+vagrant@repoverse:~$ ll /usr/local
+total 36K
+(...)
+drwxr-xr-x 7 vagrant vagrant 4.0K Dec  9 12:37 payara5
+```
+
+Added the user `payara` to own the Dataverse related software
+
+```
+vagrant@repoverse:~$ sudo useradd dataverse
+```
+
+Changing ownership of some directories in `payara5` to `dataverse` user
+
+```
+vagrant@repoverse:~$ sudo chown -R root:root /usr/local/payara5
+vagrant@repoverse:~$ sudo chown dataverse /usr/local/payara5/glassfish/lib
+vagrant@repoverse:~$ sudo chown -R dataverse:dataverse /usr/local/payara5/glassfish/domains/domain1
+```
+
+It seems that it's not necessary to change in the `domain.xml` since it already has `-server` (instead of `-client` like in previous version of Glassfish)
+
+```
+vagrant@repoverse:~$ grep  'jvm-options' /usr/local/payara5/glassfish/domains/domain1/config/domain.xml | grep '-server' | head -n 1
+                <jvm-options>-server</jvm-options>
+vagrant@repoverse:~$ 
+```
+
+### Launching Payara on System Boot
+
+For the moment, I'm skipping this step since the documentation states that Dataverse will start Payara as needed. The docuementation also provides a service script if needed. For the moment I just downloaded the script:
+
+```
+vagrant@repoverse:~$ wget https://guides.dataverse.org/en/latest/_downloads/c08a166c96044c52a1a470cc2ff60444/payara.service
+vagrant@repoverse:~$ head -n 5 payara.service 
+[Unit]
+Description = Payara Server
+After = syslog.target network.target
+(...)
+```
+
