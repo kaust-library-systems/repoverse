@@ -507,3 +507,76 @@ Get:3 https://deb.debian.org/debian bullseye/main amd64 jq amd64 1.6-2.1 [64.9 k
 Fetched 384 kB in 1s (446 kB/s)
 (...)
 ```
+
+## ImageMagick
+
+Installing ImageMagick
+
+```
+vagrant@repoverse:~$ sudo apt install imagemagick
+```
+
+Double checking the location of `convert` utility is in the right place, and here we are good:
+
+```
+vagrant@repoverse:~$ ls /usr/bin/convert*
+/usr/bin/convert  /usr/bin/convert-im6  /usr/bin/convert-im6.q16
+vagrant@repoverse:~$
+```
+
+## R
+
+Installing R
+
+```
+vagrant@repoverse:~$ sudo apt install r-base r-base
+```
+
+### R Packages
+
+Installing R packages
+
+- R2HTML
+- rjson
+- DescTools
+- Rserve
+- haven
+
+#### Dependencies
+
+Installing the following [packages as dependency](https://stackoverflow.com/questions/65958533/r-error-dependencies-xml2-httr-are-not-available-for-package-linux-mint-2) for `DescTools` package
+
+```
+sudo apt install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+```
+
+#### Installing R Packages
+
+Locating the R libraries
+
+```
+vagrant@repoverse:~$ ls -l /usr/lib/R/library
+total 120
+drwxr-xr-x  8 root root 4096 Feb 25 13:38 KernSmooth
+drwxr-xr-x 10 root root 4096 Feb 25 13:38 MASS
+(...)
+```
+
+Installing the libraries are _root_
+
+```
+vagrant@repoverse:~$ sudo R
+
+R version 4.0.4 (2021-02-15) -- "Lost Library Book"
+(...)
+> install.packages("R2HTML", repos="https://cloud.r-project.org/", lib="/usr/lib/R/library")
+trying URL 'https://cloud.r-project.org/src/contrib/R2HTML_2.3.3.tar.gz'
+Content type 'application/x-gzip' length 315809 bytes (308 KB)
+(...)
+> install.packages("DescTools", repos="https://cloud.r-project.org/", lib="/usr/lib/R/library")
+(...)
+> install.packages("Rserve", repos="https://cloud.r-project.org/", lib="/usr/lib/R/library")
+(...)
+> install.packages("haven", repos="https://cloud.r-project.org/", lib="/usr/lib/R/library")
+(...)
+```
