@@ -490,3 +490,20 @@ vagrant@repoverse:~$
 ```
 
 ### Securing Solr
+
+TODO: Not configuring a firewall at this poing.
+
+## jq
+
+Installed `jq`
+
+```
+vagrant@repoverse:~$ sudo apt install jq
+(...)
+Do you want to continue? [Y/n]
+Get:1 https://deb.debian.org/debian bullseye/main amd64 libonig5 amd64 6.9.6-1.1 [185 kB]
+Get:2 https://deb.debian.org/debian bullseye/main amd64 libjq1 amd64 1.6-2.1 [135 kB]
+Get:3 https://deb.debian.org/debian bullseye/main amd64 jq amd64 1.6-2.1 [64.9 kB]
+Fetched 384 kB in 1s (446 kB/s)
+(...)
+```
