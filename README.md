@@ -573,6 +573,8 @@ R version 4.0.4 (2021-02-15) -- "Lost Library Book"
 trying URL 'https://cloud.r-project.org/src/contrib/R2HTML_2.3.3.tar.gz'
 Content type 'application/x-gzip' length 315809 bytes (308 KB)
 (...)
+> install.packages("rjson", repos="https://cloud.r-project.org/", lib="/usr/lib/R/library" )
+(...)
 > install.packages("DescTools", repos="https://cloud.r-project.org/", lib="/usr/lib/R/library")
 (...)
 > install.packages("Rserve", repos="https://cloud.r-project.org/", lib="/usr/lib/R/library")
