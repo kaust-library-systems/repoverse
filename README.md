@@ -36,13 +36,13 @@ vagrant@repoverse:~$
 Using [Payara](https://www.payara.fish/downloads/payara-platform-community-edition/) version 5 as on Dataverse documentation. After downloading to the host machine, I uploaded to the VM:
 
 ```
-mgarcia@mordor:~/Work/repoverse$ vagrant upload ~/Downloads/payara-5.2022.5.zip 
+mgarcia@mordor:~/Work/repoverse$ vagrant upload ~/Downloads/payara-5.2022.5.zip
 Uploading /home/mgarcia/Downloads/payara-5.2022.5.zip to payara-5.2022.5.zip
 Upload has completed successfully!
 
   Source: /home/mgarcia/Downloads/payara-5.2022.5.zip
   Destination: payara-5.2022.5.zip
-mgarcia@mordor:~/Work/repoverse$ 
+mgarcia@mordor:~/Work/repoverse$
 ```
 
 And after the upload
@@ -50,7 +50,7 @@ And after the upload
 ```
 vagrant@repoverse:~$ ls
 payara-5.2022.5.zip
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 ```
 
 Installed `unzip`
@@ -62,9 +62,9 @@ vagrant@repoverse:~$ sudo apt install unzip
 Extrancting `payara`, and moving it to `/usr/local/`
 
 ```
-vagrant@repoverse:~$ unzip payara-5.2022.5.zip    
-Archive:  payara-5.2022.5.zip                                         
-   creating: payara5/ 
+vagrant@repoverse:~$ unzip payara-5.2022.5.zip
+Archive:  payara-5.2022.5.zip
+   creating: payara5/
    (...)
 vagrant@repoverse:~$ sudo mv payara5 /usr/local/
 vagrant@repoverse:~$ ls /usr/local/
@@ -95,7 +95,7 @@ It seems that it's not necessary to change in the `domain.xml` since it already 
 ```
 vagrant@repoverse:~$ grep  'jvm-options' /usr/local/payara5/glassfish/domains/domain1/config/domain.xml | grep '-server' | head -n 1
                 <jvm-options>-server</jvm-options>
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 ```
 
 ### Launching Payara on System Boot
@@ -104,7 +104,7 @@ For the moment, I'm skipping this step since the documentation states that Datav
 
 ```
 vagrant@repoverse:~$ wget https://guides.dataverse.org/en/latest/_downloads/c08a166c96044c52a1a470cc2ff60444/payara.service
-vagrant@repoverse:~$ head -n 5 payara.service 
+vagrant@repoverse:~$ head -n 5 payara.service
 [Unit]
 Description = Payara Server
 After = syslog.target network.target
@@ -119,19 +119,19 @@ Installing `postgres` from the Debian packages
 
 ```
 vagrant@repoverse:~$ sudo apt install postgresql
-Reading package lists... Done                                                                                                                
-Building dependency tree... Done                                                                                                             
-Reading state information... Done                                     
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
 The following additional packages will be installed:
   libpq5 libxslt1.1 postgresql-13 postgresql-client-13 postgresql-client-common postgresql-common ssl-cert sysstat
-Suggested packages:                                                   
-  postgresql-doc postgresql-doc-13 libjson-perl isag           
-The following NEW packages will be installed:              
+Suggested packages:
+  postgresql-doc postgresql-doc-13 libjson-perl isag
+The following NEW packages will be installed:
   libpq5 libxslt1.1 postgresql postgresql-13 postgresql-client-13 postgresql-client-common postgresql-common ssl-cert sysstat
 0 upgraded, 9 newly installed, 0 to remove and 0 not upgraded.
-Need to get 18.1 MB of archives.                                                                                                             
+Need to get 18.1 MB of archives.
 After this operation, 60.2 MB of additional disk space will be used.
-Do you want to continue? [Y/n]                                        
+Do you want to continue? [Y/n]
 Get:1 https://deb.debian.org/debian bullseye/main amd64 libpq5 amd64 13.9-0+deb11u1 [180 kB]
 Get:2 https://deb.debian.org/debian bullseye/main amd64 libxslt1.1 amd64 1.1.34-4+deb11u1 [240 kB]
 Get:3 https://deb.debian.org/debian bullseye/main amd64 postgresql-client-common all 225 [89.3 kB]
@@ -161,8 +161,8 @@ vagrant@repoverse:~$ systemctl status postgresql
      CGroup: /system.slice/postgresql.service
 vagrant@repoverse:~$
 vagrant@repoverse:~$ sudo pg_ctlcluster 13 main stop
-vagrant@repoverse:~$ 
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
+vagrant@repoverse:~$
 vagrant@repoverse:~$ systemctl status postgresql
 ● postgresql.service - PostgreSQL RDBMS
      Loaded: loaded (/lib/systemd/system/postgresql.service; enabled; vendor preset: enabled)
@@ -173,7 +173,7 @@ vagrant@repoverse:~$ systemctl status postgresql
         CPU: 0
      CGroup: /system.slice/postgresql.service
 vagrant@repoverse:~$ sudo systemctl start postgresql
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 vagrant@repoverse:~$ systemctl status postgresql
 ● postgresql.service - PostgreSQL RDBMS
      Loaded: loaded (/lib/systemd/system/postgresql.service; enabled; vendor preset: enabled)
@@ -217,14 +217,15 @@ ssl_key_file = '/etc/ssl/private/ssl-cert-snakeoil.key'
 stats_temp_directory = '/var/run/postgresql/13-main.pg_stat_tmp'
 timezone = 'Etc/UTC'
 unix_socket_directories = '/var/run/postgresql'
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 ```
+
 Or to show just the `pg_hba.conf` file
 
 ```
 vagrant@repoverse:~$ pg_conftool -s 13 main show hba_file
 /etc/postgresql/13/main/pg_hba.conf
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 ```
 
 No need to edit `pg_hba.conf` since already has the correct configuration for PostgreSQL and Payara running on the same host
@@ -242,7 +243,7 @@ host    all             all             127.0.0.1/32            md5
 
 ```
 vagrant@repoverse:~$ sudo -i -u postgres
-postgres@repoverse:~$ 
+postgres@repoverse:~$
 postgres@repoverse:~$ psql
 psql (13.9 (Debian 13.9-0+deb11u1))
 Type "help" for help.
@@ -254,15 +255,15 @@ Setting the [password for user `postgres`](https://stackoverflow.com/questions/2
 
 ```
 vagrant@repoverse:~$ sudo -i -u postgres
-postgres@repoverse:~$ 
+postgres@repoverse:~$
 postgres@repoverse:~$ psql
 psql (13.9 (Debian 13.9-0+deb11u1))
 Type "help" for help.
 
-postgres=# 
+postgres=#
 postgres=# ALTER USER postgres PASSWORD 'mynewpasswd';
 ALTER ROLE
-postgres=# 
+postgres=#
 postgres=# exit
 postgres@repoverse:~$ exit
 logout
@@ -273,7 +274,7 @@ We are going to enable connections from the network to Postgres. Although it see
 
 ```
 vagrant@repoverse:~$ sudo vim /etc/postgresql/13/main/postgresql.conf
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 vagrant@repoverse:~$ diff /etc/postgresql/13/main/postgresql.conf \
 > /etc/postgresql/13/main/postgresql.conf_orig
 60c60
@@ -324,18 +325,18 @@ solr-8.11.2
 $ cd solr-8.11.2
 $ ls
 CHANGES.txt  LICENSE.txt  LUCENE_CHANGES.txt  NOTICE.txt  README.txt  bin  contrib  dist  docs  example  licenses  server
-$ 
+$
 $ cp -r server/solr/configsets/_default server/solr/collection1
-$ 
+$
 ```
 
 Downloading and extracting Dataverse package files
 
 ```
 vagrant@repoverse:~$ wget https://github.com/IQSS/dataverse/releases/download/v5.13/dvinstall.zip
-vagrant@repoverse:~$ unzip dvinstall.zip -d /tmp/                                                                                                                   
-Archive:  dvinstall.zip                                                                                                                                             
-  inflating: /tmp/dvinstall/as-setup.sh                                                                                                                             
+vagrant@repoverse:~$ unzip dvinstall.zip -d /tmp/
+Archive:  dvinstall.zip
+  inflating: /tmp/dvinstall/as-setup.sh
   inflating: /tmp/dvinstall/dataverse.war
   (...)
 ```
@@ -343,7 +344,7 @@ Archive:  dvinstall.zip
 Copy Dataverse configuration files to Solr directory
 
 ```
-vagrant@repoverse:/tmp/dvinstall$ # mg. Backup of solrconfig.xml                                                                             
+vagrant@repoverse:/tmp/dvinstall$ # mg. Backup of solrconfig.xml
 vagrant@repoverse:/tmp/dvinstall$ sudo cp \
 > /usr/local/solr/solr-8.11.2/server/solr/collection1/conf/solrconfig.xml \
 > /usr/local/solr/solr-8.11.2/server/solr/collection1/conf/solrconfig.xml_orig
@@ -362,19 +363,43 @@ Next we change the file `jetty.xml` to increase the default value of `requestHea
 ```
 vagrant@repoverse:~$ sudo cp /usr/local/solr/solr-8.11.2/server/etc/jetty.xml \
 > /usr/local/solr/solr-8.11.2/server/etc/jetty.xml_orig
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 vagrant@repoverse:~$ sudo vim /usr/local/solr/solr-8.11.2/server/etc/jetty.xml
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 vagrant@repoverse:~$ diff /usr/local/solr/solr-8.11.2/server/etc/jetty.xml \
-> /usr/local/solr/solr-8.11.2/server/etc/jetty.xml_orig 
+> /usr/local/solr/solr-8.11.2/server/etc/jetty.xml_orig
 71c71
 <     <Set name="requestHeaderSize"><Property name="solr.jetty.request.header.size" default="102400" /></Set>
 ---
 >     <Set name="requestHeaderSize"><Property name="solr.jetty.request.header.size" default="8192" /></Set>
-vagrant@repoverse:~$ 
+vagrant@repoverse:~$
 ```
 
-> *Not* setting the `ulimit` values yet.
+Giving Solr more resources to run Solr in production
+
+```
+vagrant@repoverse:~$ sudo cp /etc/security/limits.conf /etc/security/limits.conf_orig
+vagrant@repoverse:~$
+vagrant@repoverse:~$ sudo vim /etc/security/limits.conf
+vagrant@repoverse:~$
+vagrant@repoverse:~$ diff /etc/security/limits.conf /etc/security/limits.conf_orig
+56,60d55
+< # Solr (Dataverse)
+< solr          soft    nproc           65000
+< solr          hard    nproc           65000
+< solr          soft    nofile          65000
+< solr          hard    nofile          65000
+vagrant@repoverse:~$
+```
+
+There is extra configuration on the startup (init) script (see below)
+
+```
+vagrant@repoverse:~$ grep 'Limit' solr.service
+LimitNOFILE=65000
+LimitNPROC=65000
+vagrant@repoverse:~$
+```
 
 Telling Solr to create the "collection1" on startup.
 
@@ -383,7 +408,85 @@ vagrant@repoverse:/usr/local/solr/solr-8.11.2/server/solr$ sudo -i -u solr
 sudo: unable to change directory to /home/solr: No such file or directory
 $ echo "name=collection1" > /usr/local/solr/solr-8.11.2/server/solr/collection1/core.properties
 $ exit
-vagrant@repoverse:/usr/local/solr/solr-8.11.2/server/solr$ 
+vagrant@repoverse:/usr/local/solr/solr-8.11.2/server/solr$
 ```
 
 ### Solr Init Script
+
+Download the Solr startup script
+
+```
+vagrant@repoverse:~$ wget https://guides.dataverse.org/en/latest/_downloads/0736976a136678bbc024ce423b223d3a/solr.service
+```
+
+Update the script for the correct version of Dataverse
+
+```
+vagrant@repoverse:~$ cp solr.service solr.service_orig
+vagrant@repoverse:~$
+vagrant@repoverse:~$ sed -i 's/11.1/11.2/' solr.service
+vagrant@repoverse:~$ diff solr.service solr.service_orig
+8,10c8,10
+< WorkingDirectory = /usr/local/solr/solr-8.11.2
+< ExecStart = /usr/local/solr/solr-8.11.2/bin/solr start -m 1g -j "jetty.host=127.0.0.1"
+< ExecStop = /usr/local/solr/solr-8.11.2/bin/solr stop
+---
+> WorkingDirectory = /usr/local/solr/solr-8.11.1
+> ExecStart = /usr/local/solr/solr-8.11.1/bin/solr start -m 1g -j "jetty.host=127.0.0.1"
+> ExecStop = /usr/local/solr/solr-8.11.1/bin/solr stop
+vagrant@repoverse:~$
+```
+
+Enabling the `systemd` scripts
+
+```
+vagrant@repoverse:~$ sudo cp solr.service /etc/systemd/system
+vagrant@repoverse:~$ sudo systemctl daemon-reload
+```
+
+A quick test (starting and stopping) show that Solr seems to be working
+
+```
+vagrant@repoverse:~$ sudo systemctl start solr.service
+vagrant@repoverse:~$
+vagrant@repoverse:~$ sudo systemctl status solr.service
+● solr.service - Apache Solr
+     Loaded: loaded (/etc/systemd/system/solr.service; disabled; vendor preset: enabled)
+     Active: active (running) since Sat 2023-02-25 11:16:18 UTC; 17s ago
+    Process: 1262 ExecStart=/usr/local/solr/solr-8.11.2/bin/solr start -m 1g -j jetty.host=127.0.0.1 (code=exited, status=0/SUCCESS)
+   Main PID: 1314 (java)
+      Tasks: 42 (limit: 9505)
+     Memory: 1.1G
+        CPU: 12.033s
+     CGroup: /system.slice/solr.service
+             └─1314 java -server -Xms1g -Xmx1g -XX:+UseG1GC -XX:+PerfDisableSharedMem -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=250 -XX:+UseLargePages -XX:+>
+
+Feb 25 11:16:14 repoverse systemd[1]: Starting Apache Solr...
+Feb 25 11:16:14 repoverse solr[1262]: Warning: Available entropy is low. As a result, use of the UUIDField, SSL, or any other features that require
+Feb 25 11:16:14 repoverse solr[1262]: RNG might not work properly. To check for the amount of available entropy, use 'cat /proc/sys/kernel/random/entropy_avail'.
+Feb 25 11:16:18 repoverse solr[1262]: [158B blob data]
+Feb 25 11:16:18 repoverse solr[1322]: Started Solr server on port 8983 (pid=1314). Happy searching!
+Feb 25 11:16:18 repoverse solr[1262]: [14B blob data]
+Feb 25 11:16:18 repoverse systemd[1]: Started Apache Solr.
+vagrant@repoverse:~$
+vagrant@repoverse:~$ sudo systemctl stop solr.service
+vagrant@repoverse:~$
+vagrant@repoverse:~$ sudo systemctl status solr.service
+● solr.service - Apache Solr
+     Loaded: loaded (/etc/systemd/system/solr.service; disabled; vendor preset: enabled)
+     Active: inactive (dead)
+
+Feb 25 11:16:18 repoverse solr[1262]: [158B blob data]
+Feb 25 11:16:18 repoverse solr[1322]: Started Solr server on port 8983 (pid=1314). Happy searching!
+Feb 25 11:16:18 repoverse solr[1262]: [14B blob data]
+Feb 25 11:16:18 repoverse systemd[1]: Started Apache Solr.
+Feb 25 11:16:46 repoverse systemd[1]: Stopping Apache Solr...
+Feb 25 11:16:47 repoverse solr[1405]: Sending stop command to Solr running on port 8983 ... waiting up to 180 seconds to allow Jetty process 1314 to stop gracefull>
+Feb 25 11:16:49 repoverse solr[1405]: [56B blob data]
+Feb 25 11:16:49 repoverse systemd[1]: solr.service: Succeeded.
+Feb 25 11:16:49 repoverse systemd[1]: Stopped Apache Solr.
+Feb 25 11:16:49 repoverse systemd[1]: solr.service: Consumed 12.986s CPU time.
+vagrant@repoverse:~$
+```
+
+### Securing Solr
