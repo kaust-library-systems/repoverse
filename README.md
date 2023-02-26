@@ -582,3 +582,102 @@ Content type 'application/x-gzip' length 315809 bytes (308 KB)
 > install.packages("haven", repos="https://cloud.r-project.org/", lib="/usr/lib/R/library")
 (...)
 ```
+
+## Rserve
+
+The Dataverse Software uses Rserve to communicate to R.
+
+Cloned the `dataverse` repository
+
+```
+vagrant@repoverse:~$ sudo apt install git
+vagrant@repoverse:~$ git clone -b master https://github.com/IQSS/dataverse.git
+```
+
+Edited the `rserve-setup.sh` to replace the old `init.d` to use `systemd` instead
+
+```
+vagrant@repoverse:~/dataverse/scripts/r/rserve$ cp rserve-setup.sh rserve-setup.sh_orig
+vagrant@repoverse:~/dataverse/scripts/r/rserve$ diff rserve-setup.sh rserve-setup.sh_orig
+42c42
+< if [ ! -f /usr/lib/systemd/system/rserve.service ]
+---
+> if [ ! -f /etc/init.d/rserve ]
+44c44,46
+<     echo "Installing Rserve startup file (systemd)."
+---
+>     echo "Installing Rserve startup file."
+>     install rserve-startup.sh /etc/init.d/rserve
+>     chkconfig rserve on
+46c48
+<     echo "systemctl start rserve"
+---
+>     echo "  service rserve start"
+48,58c50
+<     echo "Copying 'rserve.service' to '/usr/lib/systemd/system'"
+<     cp rserve.service /usr/lib/systemd/system
+<     echo "Running 'systemctl daemon-reload'"
+<     systemctl daemon-reload
+<     echo "Running 'systemctl enable rserve'"
+<     systemctl enable rserve
+<     echo "Running 'systemctl start rserve'"
+<     systemctl start rserve
+<     echo "Sleeping 2 minutes"
+<     sleep 120
+<     echo "done."
+---
+>     echo "If this is a RedHat/CentOS 7/8 system, you may want to use the systemctl file rserve.service instead (provided in this directory)"
+vagrant@repoverse:~/dataverse/scripts/r/rserve$
+```
+
+Finally we run the script
+
+```
+vagrant@repoverse:~/dataverse/scripts/r/rserve$ sudo ./rserve-setup.sh
+
+Configuring Rserve.
+
+
+checking if rserve user already exists:
+
+installing Rserv configuration file.
+
+Installing Rserve password file.
+Please change the default password in /etc/Rserv.pwd
+(and make sure this password is set correctly as a
+JVM option in the glassfish configuration of your DVN)
+
+Installing Rserve startup file (systemd).
+You can start Rserve daemon by executing
+systemctl start rserve
+
+Copying 'rserve.service' to '/usr/lib/systemd/system'
+Running 'systemctl daemon-reload'
+Running 'systemctl enable rserve'
+Created symlink /etc/systemd/system/multi-user.target.wants/rserve.service → /lib/systemd/system/rserve.service.
+Running 'systemctl start rserve'
+Sleeping 2 minutes
+done.
+
+Successfully installed Dataverse Rserve framework.
+vagrant@repoverse:~/dataverse/scripts/r/rserve$
+```
+
+Check if the service is running
+
+```
+vagrant@repoverse:~/dataverse/scripts/r/rserve$ systemctl status rserve
+● rserve.service - Rserve
+     Loaded: loaded (/lib/systemd/system/rserve.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2023-02-26 18:44:45 UTC; 2min 9s ago
+    Process: 26228 ExecStartPre=/usr/bin/mkdir -p /var/run/rserve (code=exited, status=0/SUCCESS)
+    Process: 26229 ExecStartPre=/usr/bin/chown -R rserve:rserve /var/run/rserve (code=exited, status=0/SUCCESS)
+    Process: 26230 ExecStart=/usr/bin/R CMD Rserve --quiet --vanilla --RS-conf /etc/Rserv.conf --RS-pidfile /var/run/rserve/rserve.pid (code=exited, stat>
+   Main PID: 26238 (Rserve)
+      Tasks: 1 (limit: 9505)
+     Memory: 37.1M
+        CPU: 263ms
+     CGroup: /system.slice/rserve.service
+             └─26238 /usr/lib/R/bin/Rserve --quiet --vanilla --RS-conf /etc/Rserv.conf --RS-pidfile /var/run/rserve/rserve.pid
+vagrant@repoverse:~/dataverse/scripts/r/rserve$
+```
