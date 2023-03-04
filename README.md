@@ -111,6 +111,38 @@ After = syslog.target network.target
 (...)
 ```
 
+Copying the script to systemd directory, but not start at boot time. I will wait for the configuration of dataverse itself, to decide if it's necessary to start before or if we can wait for dataverse to start payara.
+
+```
+vagrant@repoverse:~$ sudo cp payara.service /etc/systemd/system/
+vagrant@repoverse:~$
+vagrant@repoverse:~$ sudo systemctl daemon-reload
+vagrant@repoverse:~$
+vagrant@repoverse:~$ sudo systemctl start payara
+vagrant@repoverse:~$
+vagrant@repoverse:~$ sudo systemctl status payara
+● payara.service - Payara Server
+     Loaded: loaded (/etc/systemd/system/payara.service; disabled; vendor preset: enabled)
+     Active: active (running) since Sat 2023-03-04 18:47:50 UTC; 9s ago
+    Process: 1968 ExecStart=/usr/bin/java -jar /usr/local/payara5/glassfish/lib/client/appserver-cli.jar start-domain (code=exited, status=0/SUCCES>
+   Main PID: 2006 (java)
+      Tasks: 153 (limit: 9505)
+     Memory: 632.1M
+        CPU: 28.109s
+     CGroup: /system.slice/payara.service
+             └─2006 /usr/lib/jvm/java-11-openjdk-amd64/bin/java -cp /usr/local/payara5/glassfish/domains/domain1/lib/ext/*:/usr/local/payara5/glass>
+
+Mar 04 18:47:41 repoverse systemd[1]: Starting Payara Server...
+Mar 04 18:47:49 repoverse java[1968]: Waiting for domain1 to start ........
+Mar 04 18:47:49 repoverse java[1968]: Successfully started the domain : domain1
+Mar 04 18:47:49 repoverse java[1968]: domain  Location: /usr/local/payara5/glassfish/domains/domain1
+Mar 04 18:47:49 repoverse java[1968]: Log File: /usr/local/payara5/glassfish/domains/domain1/logs/server.log
+Mar 04 18:47:49 repoverse java[1968]: Admin Port: 4848
+Mar 04 18:47:49 repoverse java[1968]: Command start-domain executed successfully.
+Mar 04 18:47:50 repoverse systemd[1]: Started Payara Server.
+vagrant@repoverse:~$
+```
+
 ## PostgreSQL
 
 ### Installiing PostgreSQL
@@ -442,6 +474,9 @@ Enabling the `systemd` scripts
 ```
 vagrant@repoverse:~$ sudo cp solr.service /etc/systemd/system
 vagrant@repoverse:~$ sudo systemctl daemon-reload
+vagrant@repoverse:~$ sudo systemctl enable solr
+Created symlink /etc/systemd/system/multi-user.target.wants/solr.service → /etc/systemd/system/solr.service.
+vagrant@repoverse:~$
 ```
 
 A quick test (starting and stopping) show that Solr seems to be working
@@ -680,4 +715,34 @@ vagrant@repoverse:~/dataverse/scripts/r/rserve$ systemctl status rserve
      CGroup: /system.slice/rserve.service
              └─26238 /usr/lib/R/bin/Rserve --quiet --vanilla --RS-conf /etc/Rserv.conf --RS-pidfile /var/run/rserve/rserve.pid
 vagrant@repoverse:~/dataverse/scripts/r/rserve$
+```
+
+## Counter Processor
+
+Counter Processor is required to enable Make Data Count metrics in a Dataverse installation.
+
+### Installing
+
+```
+wget https://github.com/CDLUC3/counter-processor/archive/v0.1.04.tar.gz
+tar tzf v0.1.04.tar.gz
+sudo tar xzf v0.1.04.tar.gz -C /usr/local/
+```
+
+### Creating Counter User
+
+```
+vagrant@repoverse:~$ sudo useradd counter
+vagrant@repoverse:~$ sudo chown -R counter:counter /usr/local/counter-processor-0.1.04/
+```
+
+Installing `python-venv` as dependency
+
+```
+vagrant@repoverse:/usr/local/counter-processor-0.1.04$ sudo apt-get install python3-venv
+vagrant@repoverse:/usr/local/counter-processor-0.1.04$ sudo -i -u counter
+$ cd /usr/local/counter-processor-0.1.04
+$ python3 -m venv venv
+$ . venv/bin/activate
+(venv) $ pip install -r requirements.txt
 ```
