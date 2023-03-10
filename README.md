@@ -746,3 +746,12 @@ $ python3 -m venv venv
 $ . venv/bin/activate
 (venv) $ pip install -r requirements.txt
 ```
+
+## Installation
+
+Installing as dependency
+
+```
+vagrant@repoverse:~$ sudo apt install python3-psycopg2
+vagrant@repoverse:~$ sudo apt install postgresql-server-dev-all
+```
